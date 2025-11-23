@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Daily Task Tracker - Professional Task Management</title>
+  <meta name="description" content="A modern, feature-rich task management application built with Flask and SQLite">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Premium Background Enhancements */
+    .background-wrapper {
+      background: linear-gradient(135deg, #0c0015 0%, #1a0a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+    }
+    
+    /* Animated Mesh Gradient */
+    .mesh-gradient {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(at 40% 20%, hsla(280,100%,50%,0.3) 0px, transparent 50%),
+        radial-gradient(at 80% 0%, hsla(189,100%,56%,0.25) 0px, transparent 50%),
+        radial-gradient(at 0% 50%, hsla(355,100%,50%,0.2) 0px, transparent 50%),
+        radial-gradient(at 80% 50%, hsla(225,100%,60%,0.3) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(22,100%,50%,0.2) 0px, transparent 50%),
+        radial-gradient(at 80% 100%, hsla(242,100%,50%,0.25) 0px, transparent 50%),
+        radial-gradient(at 0% 0%, hsla(150,100%,50%,0.15) 0px, transparent 50%);
+      animation: meshMove 20s ease-in-out infinite;
+    }
+    
+    @keyframes meshMove {
+      0%, 100% { filter: hue-rotate(0deg); transform: scale(1); }
+      50% { filter: hue-rotate(30deg); transform: scale(1.1); }
+    }
+    
+    /* Aurora Effect */
+    .aurora {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0.6;
+    }
+    
+    .aurora-beam {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg at 50% 50%, 
+        transparent 0deg, 
+        rgba(99,102,241,0.4) 60deg, 
+        transparent 120deg,
+        rgba(139,92,246,0.3) 180deg,
+        transparent 240deg,
+        rgba(236,72,153,0.3) 300deg,
+        transparent 360deg);
+      animation: auroraRotate 30s linear infinite;
+      filter: blur(80px);
+    }
+    
+    @keyframes auroraRotate {
+      from { transform: translate(-25%, -25%) rotate(0deg); }
+      to { transform: translate(-25%, -25%) rotate(360deg); }
+    }
+    
+    /* Floating Particles */
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat 15s infinite;
+    }
+    
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 20%; animation-delay: 2s; }
+    .particle:nth-child(3) { left: 30%; animation-delay: 4s; }
+    .particle:nth-child(4) { left: 40%; animation-delay: 6s; }
+    .particle:nth-child(5) { left: 50%; animation-delay: 8s; }
+    .particle:nth-child(6) { left: 60%; animation-delay: 10s; }
+    .particle:nth-child(7) { left: 70%; animation-delay: 1s; }
+    .particle:nth-child(8) { left: 80%; animation-delay: 3s; }
+    .particle:nth-child(9) { left: 90%; animation-delay: 5s; }
+    .particle:nth-child(10) { left: 15%; animation-delay: 7s; }
+    .particle:nth-child(11) { left: 25%; animation-delay: 9s; }
+    .particle:nth-child(12) { left: 35%; animation-delay: 11s; }
+    .particle:nth-child(13) { left: 45%; animation-delay: 13s; }
+    .particle:nth-child(14) { left: 55%; animation-delay: 0.5s; }
+    .particle:nth-child(15) { left: 65%; animation-delay: 2.5s; }
+    .particle:nth-child(16) { left: 75%; animation-delay: 4.5s; }
+    .particle:nth-child(17) { left: 85%; animation-delay: 6.5s; }
+    .particle:nth-child(18) { left: 95%; animation-delay: 8.5s; }
+    .particle:nth-child(19) { left: 5%; animation-delay: 10.5s; }
+    .particle:nth-child(20) { left: 50%; animation-delay: 12.5s; }
+    
+    @keyframes particleFloat {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+    }
+    
+    /* Glowing Orbs */
+    .glow-orbs {
+      position: absolute;
+      inset: 0;
+      filter: blur(100px);
+    }
+    
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      animation: orbFloat 25s ease-in-out infinite;
+    }
+    
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.5), rgba(139,92,246,0.3));
+      top: -20%; left: -10%;
+      animation-delay: 0s;
+    }
+    
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: linear-gradient(135deg, rgba(236,72,153,0.4), rgba(251,146,60,0.3));
+      bottom: -15%; right: -10%;
+      animation-delay: -8s;
+    }
+    
+    .orb-3 {
+      width: 400px; height: 400px;
+      background: linear-gradient(135deg, rgba(34,211,238,0.4), rgba(99,102,241,0.3));
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -16s;
+    }
+    
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(50px, -30px) scale(1.1); }
+      50% { transform: translate(-30px, 50px) scale(0.95); }
+      75% { transform: translate(30px, 30px) scale(1.05); }
+    }
+    
+    /* Animated Grid */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridPulse 4s ease-in-out infinite;
+    }
+    
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
+    }
+    
+    /* Scan Line Effect */
+    .scan-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(99,102,241,0.5), rgba(139,92,246,0.5), transparent);
+      animation: scanMove 8s linear infinite;
+      box-shadow: 0 0 20px rgba(99,102,241,0.5);
+    }
+    
+    @keyframes scanMove {
+      0% { top: -2px; }
+      100% { top: 100%; }
+    }
+    
+    /* Premium Container */
+    .container {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(40px);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 
+        0 25px 50px -12px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 0 100px rgba(99,102,241,0.1);
+      animation: containerGlow 4s ease-in-out infinite alternate;
+    }
+    
+    @keyframes containerGlow {
+      0% { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 0 60px rgba(99,102,241,0.1); }
+      100% { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1) inset, 0 0 100px rgba(139,92,246,0.15); }
+    }
+    
+    /* Premium Header */
+    .header {
+      background: linear-gradient(135deg, rgba(99,102,241,0.9) 0%, rgba(139,92,246,0.9) 50%, rgba(168,85,247,0.9) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
+      animation: patternMove 60s linear infinite;
+    }
+    
+    @keyframes patternMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 100px 100px; }
+    }
+    
+    .header-shine {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: headerShine 6s ease-in-out infinite;
+    }
+    
+    @keyframes headerShine {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+    
+    /* Logo Enhancements */
+    .logo-container {
+      position: relative;
+    }
+    
+    .logo-ring {
+      position: absolute;
+      inset: -8px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      animation: logoRing 3s ease-in-out infinite;
+    }
+    
+    .logo-ring-2 {
+      animation-delay: 1.5s;
+      border-color: rgba(255,255,255,0.15);
+      inset: -16px;
+      border-radius: 24px;
+    }
+    
+    @keyframes logoRing {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0; }
+    }
+    
+    /* Tech Stack Badges */
+    .header-tech-stack {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .tech-badge {
+      background: rgba(255,255,255,0.15);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255,255,255,0.2);
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+    
+    .tech-badge:nth-child(2) { animation-delay: 0.3s; }
+    .tech-badge:nth-child(3) { animation-delay: 0.6s; }
+    
+    @keyframes badgePulse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+    
+    /* Status Indicator */
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16,185,129,0.2);
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: 1px solid rgba(16,185,129,0.3);
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 12px;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: statusPulse 2s ease-in-out infinite;
+      box-shadow: 0 0 10px #10b981;
+    }
+    
+    @keyframes statusPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+    }
+
+    /* User Info & Logout Button */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.1);
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 12px;
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #818CF8, #C4B5FD);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    
+    .logout-btn {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(239,68,68,0.25);
+      transform: translateY(-1px);
+    }
+    
+    /* Feature Bar */
+    .feature-bar {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 16px;
+      background: rgba(0,0,0,0.2);
+      margin-top: 24px;
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+    
+    .feature-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255,255,255,0.2);
+    }
+    
+    /* Main Content Glass Effect */
+    .main-content {
+      background: rgba(255,255,255,0.95);
+      margin: 0;
+      border-radius: 0;
+    }
+    
+    /* Premium Flash Messages */
+    .flash-message {
+      backdrop-filter: blur(10px);
+      animation: flashSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes flashSlide {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOutRight {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100px); opacity: 0; }
+    }
+    
+    /* Premium Footer */
+    .footer {
+      background: linear-gradient(135deg, rgba(15,15,35,0.98), rgba(30,20,50,0.98));
+      color: white;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .footer-wave {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99,102,241,0.5), rgba(139,92,246,0.5), transparent);
+    }
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 32px;
+      padding: 32px;
+    }
+    
+    .footer-left {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    
+    .footer-logo svg {
+      filter: drop-shadow(0 4px 12px rgba(99,102,241,0.4));
+    }
+    
+    .footer-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    
+    .footer-description {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-bottom: 12px;
+    }
+    
+    .footer-tech {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .tech-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      opacity: 0.6;
+    }
+    
+    .footer-right {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    
+    .footer-links-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+    
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .footer-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    
+    .footer-link:hover {
+      color: white;
+      transform: translateX(4px);
+    }
+    
+    .footer-stats {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-number {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      opacity: 0.6;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 32px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    
+    .copyright {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+    
+    .copyright svg {
+      animation: heartBeat 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    
+    .footer-badges {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .badge-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .feature-bar { gap: 12px; }
+      .feature-divider { display: none; }
+      .footer-content { flex-direction: column; }
+      .footer-right { flex-direction: column; gap: 24px; }
+      .footer-stats { justify-content: space-around; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ultimate Premium Animated Background -->
+  <div class="background-wrapper">
+    <!-- Aurora Effect -->
+    <div class="aurora">
+      <div class="aurora-beam"></div>
+    </div>
+    
+    <!-- Mesh Gradient -->
+    <div class="mesh-gradient"></div>
+    
+    <!-- Glowing Orbs -->
+    <div class="glow-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    
+    <!-- Animated Grid -->
+    <div class="grid-overlay"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles">
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+    </div>
+    
+    <!-- Scan Line -->
+    <div class="scan-line"></div>
+  </div>
+
+  <div class="app-wrapper">
+    <div class="container">
+      <!-- Premium Header -->
+      <header class="header">
+        <div class="header-shine"></div>
+        <div class="header-content">
+          <div class="logo-section">
+            <div class="logo-container">
+              <div class="logo-ring"></div>
+              <div class="logo-ring logo-ring-2"></div>
+              <svg class="logo-icon" width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="56" height="56" rx="16" fill="url(#logoGrad)"/>
+                <path d="M15 28L24 37L41 19" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="logoGrad" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#818CF8"/>
+                    <stop offset="0.5" stop-color="#A78BFA"/>
+                    <stop offset="1" stop-color="#C4B5FD"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="header-text">
+              <h1 class="app-title">Daily Task Tracker</h1>
+              <p class="app-subtitle">✨ Professional Task Management System</p>
+              <div class="header-tech-stack">
+                <span class="tech-badge">🐍 Python</span>
+                <span class="tech-badge">⚡ Flask</span>
+                <span class="tech-badge">🗃️ SQLite</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="header-right">
+            <div class="header-badge">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2"/>
+                <path d="M9 4V9L12 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <div>
+                <div style="font-size:11px;opacity:0.8">Today</div>
+                <div id="current-date" style="font-weight:600"></div>
+              </div>
+            </div>
+            
+            {% if session.username %}
+            <div class="user-info">
+              <div class="user-avatar">{{ session.username[0]|upper }}</div>
+              <span>{{ session.username }}</span>
+              <a href="{{ url_for('logout') }}" class="logout-btn">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 13H2.33333C1.97971 13 1.64057 12.8595 1.39052 12.6095C1.14048 12.3594 1 12.0203 1 11.6667V2.33333C1 1.97971 1.14048 1.64057 1.39052 1.39052C1.64057 1.14048 1.97971 1 2.33333 1H5M9.66667 10.3333L13 7M13 7L9.66667 3.66667M13 7H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Logout
+              </a>
+            </div>
+            {% else %}
+            <div class="status-indicator">
+              <div class="status-dot"></div>
+              <span>System Active</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="feature-bar">
+          <div class="feature-item">
+            <span>⭐</span> Priority Management
+          </div>
+          <div class="feature-divider"></div>
+          <div class="feature-item">
+            <span>⏱️</span> Real-time Tracking
+          </div>
+          <div class="feature-divider"></div>
+          <div class="feature-item">
+            <span>✅</span> Instant Updates
+          </div>
+        </div>
+      </header>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-container">
+            {% for category, message in messages %}
+              <div class="flash-message flash-{{ category }}">
+                <span>{{ message }}</span>
+                <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <main class="main-content">
+        {% block content %}{% endblock %}
+      </main>
+
+      <!-- Premium Footer -->
+      <footer class="footer">
+        <div class="footer-wave"></div>
+        <div class="footer-content">
+          <div class="footer-left">
+            <div class="footer-logo">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect width="40" height="40" rx="10" fill="url(#footGrad)"/>
+                <path d="M11 20L17 26L29 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="footGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#6366F1"/>
+                    <stop offset="1" stop-color="#A855F7"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="footer-info">
+              <p class="footer-title">Daily Task Tracker</p>
+              <p class="footer-description">Built with modern web technologies</p>
+              <div class="footer-tech">
+                <span class="tech-item">⚡ Flask Framework</span>
+                <span class="tech-item">🗄️ SQLite Database</span>
+                <span class="tech-item">🐍 Python Backend</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="footer-right">
+            <div class="footer-links-group">
+              <h4 class="footer-links-title">Quick Links</h4>
+              <div class="footer-links">
+                <a href="#" class="footer-link">📖 About Project</a>
+                <a href="#" class="footer-link">🚀 Features</a>
+                <a href="#" class="footer-link">📚 Documentation</a>
+                <a href="#" class="footer-link">📧 Contact</a>
+              </div>
+            </div>
+            
+            <div class="footer-stats">
+              <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Responsive</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">Fast</span>
+                <span class="stat-label">Performance</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">Modern</span>
+                <span class="stat-label">Design</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <p class="copyright">
+            © 2024 Daily Task Tracker · Crafted with 
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 14L2 8C0.5 6.5 0.5 4 2 2.5C3.5 1 6 1 7 2.5L8 4L9 2.5C10 1 12.5 1 14 2.5C15.5 4 15.5 6.5 14 8L8 14Z" fill="#EF4444"/>
+            </svg>
+            and Python
+          </p>
+          <div class="footer-badges">
+            <span class="badge-item">⭐ Open Source</span>
+            <span class="badge-item">🔄 Always Updated</span>
+            <span class="badge-item">🚀 Production Ready</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Display current date
+    const dateEl = document.getElementById('current-date');
+    if (dateEl) {
+      const opts = { weekday: 'short', month: 'short', day: 'numeric' };
+      dateEl.textContent = new Date().toLocaleDateString('en-US', opts);
+    }
+
+    // Auto-dismiss flash messages
+    setTimeout(() => {
+      document.querySelectorAll('.flash-message').forEach(f => {
+        f.style.animation = 'slideOutRight 0.4s ease forwards';
+        setTimeout(() => f.remove(), 400);
+      });
+    }, 6000);
+  </script>
+</body>
+</html>
