@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Flask Daily Task Tracker
 
 Simple Flask web app to add, edit, delete, and mark daily tasks as completed. Uses SQLite (Flask-SQLAlchemy). Built to satisfy the Python Developer Screening Task.
@@ -24,3 +25,7 @@ Simple Flask web app to add, edit, delete, and mark daily tasks as completed. Us
 4. Set build command: `pip install -r requirements.txt`
 5. Start command: `gunicorn app:app`
 6. Set environment variable `FLASK_SECRET` on the host for production.
+=======
+# flask-task-tracker
+Daily task tracker(Flask Web App Challenge)
+>>>>>>> 8e36699b899377d5d6e7204ee8b70f8f8b1608d3
